@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Weather App Home</string>
+    <string name="title_activity_favourites">Favourite Cities</string>
+    <string name="Add_Favourite_Title">Add a City</string>
+    <string name="Set_Home">Set Home City</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="open_weather_maps_app_id">71a6c2a56595c197f64b10847d4f5c5e</string>
+    <string name="city_name">City Name</string>
+    <string name="add">Add</string>
+
+    <string name="weather">Weather: </string>
+    <string name="temperature">Temperature: </string>
+
+</resources>
