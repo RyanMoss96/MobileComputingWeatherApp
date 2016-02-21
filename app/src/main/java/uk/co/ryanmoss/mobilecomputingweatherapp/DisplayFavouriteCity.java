@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -46,8 +47,8 @@ public class DisplayFavouriteCity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_favourite_city);
 
-        Button openMapButton = (Button) findViewById(R.id.mapOpen);
-        openMapButton.setVisibility(View.VISIBLE);
+
+
         Button setHomeButton = (Button) findViewById(R.id.action_set_home);
         Intent intent = getIntent();
         String apiKey = ctx.getString(R.string.open_weather_maps_app_id);
@@ -59,21 +60,24 @@ public class DisplayFavouriteCity extends AppCompatActivity {
                 "Getting the weather data for " + cityName, true);
 
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ctx, MapsActivity.class);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
+                startActivity(intent);
+            }
+        });
+
 
             TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
 
             lblTemperature.setText(temperature + " \u2103");
 
 
-            openMapButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ctx, MapsActivity.class);
-                    intent.putExtra("longitude", longitude);
-                    intent.putExtra("latitude", latitude);
-                    startActivity(intent);
-                }
-            });
+
 
 
     }
