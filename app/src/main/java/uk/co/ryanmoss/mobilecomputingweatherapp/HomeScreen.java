@@ -41,6 +41,9 @@ public class HomeScreen extends AppCompatActivity
     String cityName;
     String temperature;
     String apiKey;
+    public Double latitude;
+    public Double longitude;
+    public Context ctx = this;
     NotificationManager mNotificationManager = null;
 
     @Override
@@ -55,8 +58,10 @@ public class HomeScreen extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(ctx, MapsActivity.class);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("latitude", latitude);
+                startActivity(intent);
             }
         });
 
@@ -189,11 +194,13 @@ public class HomeScreen extends AppCompatActivity
 
             JSONParser jsonParse = new JSONParser(data);
             String[] weatherInfo = jsonParse.getWeather();
-            String[] coordInfo = jsonParse.getCoords();
+            Double[] coordInfo = jsonParse.getCoords();
             String[] baseInfo = jsonParse.getBase();
             String[] main = jsonParse.getMain();
-
+            Double[] coord = jsonParse.getCoords();
             temperature = main[0];
+            latitude = coord[1];
+            longitude = coord[0];
 
             new weatherIcon().execute(weatherInfo[3]);
         }

@@ -12,7 +12,11 @@
     <string name="city_name">City Name</string>
     <string name="add">Add</string>
 
-    <string name="weather">Weather: </string>
     <string name="temperature">Temperature: </string>
+    <string name="title_activity_maps">Map</string>
+    <string name="primary_home">Primary Home</string>
+    <string name="secondary_home">Secondary Home</string>
+    <string name="pri_sec_home_desc">Would you like to set this City as your Primary or Secondary Home?</string>
+    <string name="set_home">Set Home City</string>
 
 </resources>

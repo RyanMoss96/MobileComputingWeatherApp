@@ -1,7 +1,10 @@
 package uk.co.ryanmoss.mobilecomputingweatherapp;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,8 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -31,29 +37,43 @@ public class DisplayFavouriteCity extends AppCompatActivity {
     public String descWeather;
     public String sunrise;
     public String sunset;
+    public Double latitude;
+    public Double longitude;
+    public int cod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_favourite_city);
 
+        Button openMapButton = (Button) findViewById(R.id.mapOpen);
+        openMapButton.setVisibility(View.VISIBLE);
+        Button setHomeButton = (Button) findViewById(R.id.action_set_home);
         Intent intent = getIntent();
-        cityName = intent.getExtras().getString("CityName");
-
-
-        TextView textCity = (TextView) findViewById(R.id.tCityName);
-        textCity.setText(cityName);
-
         String apiKey = ctx.getString(R.string.open_weather_maps_app_id);
-        new weatherAPI().execute(cityName, apiKey);
 
+        cityName = intent.getExtras().getString("CityName");
+        setTitle(cityName);
+        new weatherAPI().execute(cityName, apiKey);
         progress = ProgressDialog.show(this, "Connecting",
                 "Getting the weather data for " + cityName, true);
 
-        TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
-        TextView lblWeather = (TextView) findViewById(R.id.lblWeather);
-        lblTemperature.setText(temperature + " \u2103");
-        lblWeather.setText(mainWeather);
+
+
+            TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
+
+            lblTemperature.setText(temperature + " \u2103");
+
+
+            openMapButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ctx, MapsActivity.class);
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("latitude", latitude);
+                    startActivity(intent);
+                }
+            });
 
 
     }
@@ -73,10 +93,12 @@ public class DisplayFavouriteCity extends AppCompatActivity {
 
                 // Commit the edits!
                 editor.commit();
+
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,19 +131,23 @@ public class DisplayFavouriteCity extends AppCompatActivity {
             String[] weatherInfo = jsonParse.getWeather();
             String[] main = jsonParse.getMain();
             String[] system = jsonParse.getSys();
+            Double[] coord = jsonParse.getCoords();
+            int[] codA = jsonParse.getCod();
+            cod = codA[0];
 
-            TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
-            TextView lblWeather = (TextView) findViewById(R.id.lblWeather);
-            lblTemperature.setText(main[0] + " \u2103");
-            lblWeather.setText(weatherInfo[1]);
+                TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
+                TextView lblWeather = (TextView) findViewById(R.id.lblWeather);
+                lblTemperature.setText(main[0] + " \u2103");
+                lblWeather.setText(weatherInfo[1]);
 
+                latitude = coord[1];
+                longitude = coord[0];
 
-            new weatherIcon().execute(weatherInfo[3]);
+                new weatherIcon().execute(weatherInfo[3]);
         }
     }
 
     public class weatherIcon extends AsyncTask<String, Void, Bitmap> {
-
 
         public void onPreExecute() {
 
@@ -133,37 +159,30 @@ public class DisplayFavouriteCity extends AppCompatActivity {
             Bitmap bmp = icon.getIcon(params[0]);
 
             return bmp;
-
         }
 
         protected void onPostExecute(Bitmap bmp) {
-            progress.dismiss();
-            ImageView img = (ImageView) findViewById(R.id.weatherImage);
+                progress.dismiss();
+                ImageView img = (ImageView) findViewById(R.id.weatherImage);
+                final int maxSize = 500;
+                int outWidth;
+                int outHeight;
 
+                int inWidth = bmp.getWidth();
+                int inHeight = bmp.getHeight();
 
-            final int maxSize = 500;
-            int outWidth;
-            int outHeight;
-            int inWidth = bmp.getWidth();
-            int inHeight = bmp.getHeight();
-            if (inWidth > inHeight) {
-                outWidth = maxSize;
-                outHeight = (inHeight * maxSize) / inWidth;
-            } else {
-                outHeight = maxSize;
-                outWidth = (inWidth * maxSize) / inHeight;
-            }
+                if (inWidth > inHeight) {
+                    outWidth = maxSize;
+                    outHeight = (inHeight * maxSize) / inWidth;
+                } else {
+                    outHeight = maxSize;
+                    outWidth = (inWidth * maxSize) / inHeight;
+                }
 
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bmp, outWidth, outHeight, false);
-
-
-            img.setImageBitmap(resizedBitmap);
-
-
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bmp, outWidth, outHeight, false);
+                img.setImageBitmap(resizedBitmap);
         }
     }
-
-
 }
 
 

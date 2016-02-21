@@ -18,15 +18,15 @@ public class JSONParser {
         this.weatherJson = json;
     }
 
-    public String[] getCoords() {
+    public Double[] getCoords() {
         try {
 
             JSONObject coorObj = weatherJson.getJSONObject("coord");
 
-            String[] coord = new String[2];
+            Double[] coord = new Double[2];
 
-           coord[0] = coorObj.getString("lon");
-            coord[1] = coorObj.getString("lat");
+           coord[0] = coorObj.getDouble("lon");
+            coord[1] = coorObj.getDouble("lat");
 
 
             return coord;
@@ -175,11 +175,11 @@ public class JSONParser {
         return null;
     }
 
-    public String[] getCod() {
+    public int[] getCod() {
         try {
-            String[] cod = new String[1];
+            int[] cod = new int[1];
 
-            cod[0] = weatherJson.getString("cod");
+            cod[0] = weatherJson.getInt("cod");
 
             return cod;
 

@@ -38,9 +38,7 @@ public class FavouritesActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 String selectedCity = ((TextView) view).getText().toString();
-
                 Intent intent = new Intent(ctx, DisplayFavouriteCity.class);
                 intent.putExtra("CityName", selectedCity);
                 startActivity(intent);
@@ -99,7 +97,7 @@ public class FavouritesActivity extends AppCompatActivity {
         favourites.readCities(this);
         ArrayList<String> favCities = favourites.getFavouriteCity();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, favCities);
         listView.setAdapter(adapter);
     }
