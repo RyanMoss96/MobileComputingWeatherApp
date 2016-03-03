@@ -9,24 +9,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.json.JSONObject;
 
@@ -35,16 +33,17 @@ import java.util.Calendar;
 
 public class HomeScreen extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    ProgressDialog progress;
-    Context context = this;
-    public static JSONObject jsonObj;
-    String cityName;
-    String temperature;
-    String apiKey;
-    public Double latitude;
-    public Double longitude;
-    public Context ctx = this;
-    NotificationManager mNotificationManager = null;
+    private ProgressDialog progress;
+    private Context context = this;
+    private static JSONObject jsonObj;
+    private String cityName;
+    private String temperature;
+    private String apiKey;
+    private Double latitude;
+    private Double longitude;
+    private Context ctx = this;
+    private int cod;
+    private NotificationManager mNotificationManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +53,7 @@ public class HomeScreen extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ctx, MapsActivity.class);
-                intent.putExtra("longitude", longitude);
-                intent.putExtra("latitude", latitude);
-                startActivity(intent);
-            }
-        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -78,13 +68,40 @@ public class HomeScreen extends AppCompatActivity
 
         SharedPreferences homeCityPref = getSharedPreferences("HomeCityPref", 0);
         cityName = homeCityPref.getString("HomeCity", null);
-
+        FloatingActionButton fabWiki = (FloatingActionButton) findViewById(R.id.fabWiki);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (cityName != null) {
+            setTitle("Home: " + cityName);
+
             progress = ProgressDialog.show(this, "Connecting",
                     "Getting the weather data for " + cityName, true);
             new weatherAPI().execute(cityName, apiKey);
-        }
 
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ctx, MapsActivity.class);
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("latitude", latitude);
+                    startActivity(intent);
+                }
+            });
+
+
+            fabWiki.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    WikipediaClass wiki = new WikipediaClass();
+                    wiki.openWiki(cityName, ctx);
+                }
+            });
+
+
+        } else {
+            fab.setVisibility(View.INVISIBLE);
+            fabWiki.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -173,9 +190,7 @@ public class HomeScreen extends AppCompatActivity
         }
     }
 
-
     public class weatherAPI extends AsyncTask<String, Void, JSONObject> {
-
 
         public void onPreExecute() {
 
@@ -193,12 +208,20 @@ public class HomeScreen extends AppCompatActivity
         protected void onPostExecute(JSONObject data) {
 
             JSONParser jsonParse = new JSONParser(data);
+            Log.e("Home Screen: ", data.toString());
             String[] weatherInfo = jsonParse.getWeather();
-            Double[] coordInfo = jsonParse.getCoords();
-            String[] baseInfo = jsonParse.getBase();
             String[] main = jsonParse.getMain();
+            String[] system = jsonParse.getSys();
             Double[] coord = jsonParse.getCoords();
+            int[] codA = jsonParse.getCod();
+            cod = codA[0];
+
+            TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
+            TextView lblWeather = (TextView) findViewById(R.id.lblWeather);
             temperature = main[0];
+            lblTemperature.setText(main[0] + " \u2103");
+            lblWeather.setText(weatherInfo[1]);
+
             latitude = coord[1];
             longitude = coord[0];
 
@@ -208,35 +231,31 @@ public class HomeScreen extends AppCompatActivity
 
     public class weatherIcon extends AsyncTask<String, Void, Bitmap> {
 
-
         public void onPreExecute() {
 
         }
 
         protected Bitmap doInBackground(String... params) {
 
-
             WeatherIcon icon = new WeatherIcon();
             Bitmap bmp = icon.getIcon(params[0]);
 
             return bmp;
-
         }
 
         protected void onPostExecute(Bitmap bmp) {
-
-            if (progress.isShowing()) {
-                progress.dismiss();
-            }
-
-            //Todo: Decide on the layout for the weather data.
-            ImageView slideImage = (ImageView) findViewById(R.id.slideImage);
-
+            progress.dismiss();
+            ImageView img = (ImageView) findViewById(R.id.weatherImage);
+            ImageView slideImg = (ImageView) findViewById(R.id.slideImage);
+            TextView cityHeadtxt = (TextView) findViewById(R.id.city);
+            TextView tempHeadtxt = (TextView) findViewById(R.id.tempHead);
             final int maxSize = 500;
             int outWidth;
             int outHeight;
+
             int inWidth = bmp.getWidth();
             int inHeight = bmp.getHeight();
+
             if (inWidth > inHeight) {
                 outWidth = maxSize;
                 outHeight = (inHeight * maxSize) / inWidth;
@@ -246,10 +265,11 @@ public class HomeScreen extends AppCompatActivity
             }
 
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(bmp, outWidth, outHeight, false);
-
+            img.setImageBitmap(resizedBitmap);
+            slideImg.setImageBitmap(resizedBitmap);
+            cityHeadtxt.setText(cityName);
+            tempHeadtxt.setText(temperature);
             setNotification(resizedBitmap);
-
-
         }
     }
 

@@ -1,6 +1,8 @@
 package uk.co.ryanmoss.mobilecomputingweatherapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +19,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-
 public class FavouritesActivity extends AppCompatActivity {
 
     Context ctx = this;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +32,6 @@ public class FavouritesActivity extends AppCompatActivity {
 
         final ListView listView = (ListView) findViewById(R.id.favCities);
         popListView(listView);
-
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -48,22 +46,49 @@ public class FavouritesActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                GetSetFavCities favourites = new GetSetFavCities();
-                String selectedCity = ((TextView) view).getText().toString();
-                favourites.readCities(ctx);
-                favourites.removeFavouriteCity(selectedCity);
-                favourites.writeCities(ctx);
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 
-                Toast toast = Toast.makeText(ctx, selectedCity + " has been removed from your favourites.", Toast.LENGTH_SHORT);
-                toast.show();
+                final String selectedCity = ((TextView) view).getText().toString();
+                final int pos = position;
 
-                popListView(listView);
+                builder.setMessage(selectedCity)
+                        .setTitle(R.string.delete_text);
+                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        GetSetFavCities favourites = new GetSetFavCities();
+                        favourites.readCities(ctx);
+                        favourites.removeFavouriteCity(selectedCity);
+                        favourites.writeCities(ctx);
+
+                        Toast toast = Toast.makeText(ctx, selectedCity + " has been removed from your favourites." + pos, Toast.LENGTH_SHORT);
+                        toast.show();
+
+                        popListView(listView);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
 
                 return true;
             }
         });
+    }
 
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        final ListView listView = (ListView) findViewById(R.id.favCities);
+        popListView(listView);
+        //Refresh your stuff here
     }
 
     @Override

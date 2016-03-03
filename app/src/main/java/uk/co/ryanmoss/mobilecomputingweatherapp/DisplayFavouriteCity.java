@@ -71,6 +71,14 @@ public class DisplayFavouriteCity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton fabWiki = (FloatingActionButton) findViewById(R.id.fabWiki);
+        fabWiki.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WikipediaClass wiki = new WikipediaClass();
+                wiki.openWiki(cityName, ctx);
+            }
+        });
 
             TextView lblTemperature = (TextView) findViewById(R.id.lblTemp);
 
@@ -94,6 +102,9 @@ public class DisplayFavouriteCity extends AppCompatActivity {
                 SharedPreferences settings = getSharedPreferences("HomeCityPref", 0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("HomeCity", cityName);
+
+                Toast toast = Toast.makeText(ctx, cityName + " has been set as your Home City!", Toast.LENGTH_SHORT);
+                toast.show();
 
                 // Commit the edits!
                 editor.commit();

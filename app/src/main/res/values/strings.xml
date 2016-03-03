@@ -20,4 +20,9 @@
     <string name="pri_sec_home_desc">Would you like to set this City as your Primary or Secondary Home?</string>
     <string name="set_home">Set Home City</string>
 
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_text">Do you wish to delete</string>
+
+
 </resources>

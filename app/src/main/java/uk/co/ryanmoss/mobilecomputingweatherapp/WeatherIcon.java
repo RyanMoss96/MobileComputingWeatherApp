@@ -22,8 +22,6 @@ public class WeatherIcon {
         } catch (Exception ex) {
 
         }
-
         return null;
-
     }
 }

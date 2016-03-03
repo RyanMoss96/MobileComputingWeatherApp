@@ -12,6 +12,52 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_home_screen"
     tools:context="uk.co.ryanmoss.mobilecomputingweatherapp.HomeScreen">
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/weatherImage"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitCenter"/>
 
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:id="@+id/mainLayout"
+        android:layout_below="@+id/weatherImage">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/lblTemp"
+            android:layout_gravity="center"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:textSize="30dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/lblWeather"
+            android:layout_gravity="center"
+            android:gravity="center|center_vertical|center_horizontal"
+            android:textSize="30dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:layout_gravity="bottom|right" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabWiki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_info_white"
+            android:layout_gravity="bottom|right" />
+    </LinearLayout>
 
 </RelativeLayout>
