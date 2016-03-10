@@ -102,6 +102,7 @@ public class HomeScreen extends AppCompatActivity
             fab.setVisibility(View.INVISIBLE);
             fabWiki.setVisibility(View.INVISIBLE);
         }
+
     }
 
     @Override
@@ -213,6 +214,7 @@ public class HomeScreen extends AppCompatActivity
             String[] main = jsonParse.getMain();
             String[] system = jsonParse.getSys();
             Double[] coord = jsonParse.getCoords();
+            String[] name = jsonParse.getName();
             int[] codA = jsonParse.getCod();
             cod = codA[0];
 
@@ -221,7 +223,7 @@ public class HomeScreen extends AppCompatActivity
             temperature = main[0];
             lblTemperature.setText(main[0] + " \u2103");
             lblWeather.setText(weatherInfo[1]);
-
+            setTitle("Home: " + name[0]);
             latitude = coord[1];
             longitude = coord[0];
 

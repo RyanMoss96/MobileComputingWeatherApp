@@ -61,7 +61,7 @@ public class FavouritesActivity extends AppCompatActivity {
                         favourites.removeFavouriteCity(selectedCity);
                         favourites.writeCities(ctx);
 
-                        Toast toast = Toast.makeText(ctx, selectedCity + " has been removed from your favourites." + pos, Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(ctx, selectedCity + " has been removed from your favourites.", Toast.LENGTH_SHORT);
                         toast.show();
 
                         popListView(listView);

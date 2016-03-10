@@ -65,12 +65,12 @@ public class WeatherHTTP  {
             Log.e("1", e.getMessage());
         } catch(IOException e)  {
             Log.e("Wea2therHTTP", e.getMessage());
-            Log.e("L", "Explanation of what was being attempted when the exception was thrown", e);
+
         } catch(JSONException e) {
             Log.e("Wea3therHTTP", e.getMessage());
         } finally {
             try {
-                Log.i("MyActivity", "MyClass.getView() — get item number " + connection.getResponseCode());
+
                 connection.disconnect();
             } catch(Throwable t) {
 

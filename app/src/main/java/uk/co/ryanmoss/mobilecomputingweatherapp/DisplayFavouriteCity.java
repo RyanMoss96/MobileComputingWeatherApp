@@ -147,6 +147,7 @@ public class DisplayFavouriteCity extends AppCompatActivity {
             String[] main = jsonParse.getMain();
             String[] system = jsonParse.getSys();
             Double[] coord = jsonParse.getCoords();
+            String[] name = jsonParse.getName();
             int[] codA = jsonParse.getCod();
             cod = codA[0];
 
@@ -154,7 +155,7 @@ public class DisplayFavouriteCity extends AppCompatActivity {
                 TextView lblWeather = (TextView) findViewById(R.id.lblWeather);
                 lblTemperature.setText(main[0] + " \u2103");
                 lblWeather.setText(weatherInfo[1]);
-
+            setTitle(name[0]);
                 latitude = coord[1];
                 longitude = coord[0];
 
